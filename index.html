@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>우리 아이 아침밥 몇 점?</title>
+<meta name="description" content="오늘 먹은 음식을 기록하고 음식 점수와 영양제 가정 기여, 다음 끼니에 할 일 하나를 확인해요.">
+<meta property="og:title" content="우리 아이 아침밥, 몇 점일까?">
+<meta property="og:description" content="약사아빠가 만든 아침밥 영양 점수 · @zzin__yaksa">
+<meta property="og:type" content="website">
+<meta property="og:image" content="og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f7f1ea">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="아침밥 점수">
+<style>
+[hidden] { display: none !important; }
+:root {
+  --bg: #f7f1ea; --card: #ffffff; --ink: #2b2522; --muted: #7a6f68; --line: #eadfd4;
+  --accent: #e2725b; --accent-soft: #fbe3dc; --boy: #4f86c6; --girl: #e0708f;
+  --band: #f3e7da; --band-strong: #ead7c3;
+  --g: #3f9a6b; --g-soft: #e3f3ea; --y: #d18b1f; --y-soft: #fbefd9; --r: #d4493b; --r-soft: #fbe1de;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1d1a18; --card: #282321; --ink: #f3ece6; --muted: #b3a79e; --line: #3a332f;
+    --accent: #f08a73; --accent-soft: #3d2a25; --band: #332c28; --band-strong: #44392f;
+    --g-soft: #1f3329; --y-soft: #3a2f1a; --r-soft: #3d2220; --g: #5cc08a; --y: #e8a63c; --r: #f07364;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1d1a18; --card: #282321; --ink: #f3ece6; --muted: #b3a79e; --line: #3a332f;
+  --accent: #f08a73; --accent-soft: #3d2a25; --band: #332c28; --band-strong: #44392f;
+  --g-soft: #1f3329; --y-soft: #3a2f1a; --r-soft: #3d2220; --g: #5cc08a; --y: #e8a63c; --r: #f07364;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+  line-height: 1.5; -webkit-font-smoothing: antialiased;
+}
+main { max-width: 480px; margin: 0 auto; padding: 20px 16px calc(96px + env(safe-area-inset-bottom)); }
+header { text-align: center; margin-bottom: 16px; }
+header .tag { display: inline-block; font-size: 13px; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 99px; text-decoration: none; }
+h1 { font-size: 24px; margin: 10px 0 4px; letter-spacing: -0.5px; }
+header p { margin: 0; color: var(--muted); font-size: 14px; }
+.card { background: var(--card); border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+.card h2 { font-size: 17px; margin: 0 0 12px; }
+.card h2 small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 4px; }
+label { display: block; font-size: 14px; color: var(--muted); margin: 12px 0 6px; }
+input {
+  width: 100%; font: inherit; font-size: 17px; color: var(--ink); background: var(--bg);
+  border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 13px; outline: none;
+}
+input:focus { border-color: var(--accent); }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg button {
+  font: inherit; font-size: 16px; padding: 11px; border-radius: 12px; cursor: pointer;
+  border: 1.5px solid var(--line); background: var(--bg); color: var(--ink);
+}
+.seg button[aria-pressed="true"][data-sex="male"] { border-color: var(--boy); background: color-mix(in srgb, var(--boy) 14%, transparent); }
+.seg button[aria-pressed="true"][data-sex="female"] { border-color: var(--girl); background: color-mix(in srgb, var(--girl) 14%, transparent); }
+.btn {
+  display: block; width: 100%; font: inherit; font-size: 17px; font-weight: 700; margin-top: 16px; text-align: center; text-decoration: none;
+  padding: 14px; border: 0; border-radius: 14px; background: var(--accent); color: #fff; cursor: pointer;
+}
+.btn.ghost { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); margin-top: 10px; }
+.btn.small { display: inline-block; width: auto; font-size: 14px; padding: 8px 14px; margin: 0; border-radius: 99px; }
+.linkbtn { font: inherit; font-size: 13px; color: var(--accent); background: none; border: 0; padding: 0 0 0 6px; cursor: pointer; text-decoration: underline; }
+.hint { font-size: 13px; color: var(--muted); margin: 8px 0 0; }
+.err { color: var(--r); font-size: 14px; margin: 10px 0 0; min-height: 1em; }
+[hidden] { display: none !important; }
+
+/* tip of the day */
+.tip { display: flex; gap: 12px; align-items: flex-start; background: var(--accent-soft); }
+.tip .emo { font-size: 26px; line-height: 1; }
+.tip b { display: block; font-size: 15px; }
+.tip span { font-size: 13px; color: var(--muted); }
+
+/* result */
+.big { text-align: center; padding: 4px 0; }
+.big .label { font-size: 15px; color: var(--muted); }
+.big .num { font-size: 50px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; margin: 4px 0; }
+.big .num small { font-size: 22px; font-weight: 700; }
+.big .range { font-size: 13px; color: var(--muted); }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.stat { background: var(--bg); border-radius: 14px; padding: 12px; text-align: center; }
+.stat .k { font-size: 13px; color: var(--muted); }
+.stat .v { font-size: 24px; font-weight: 800; margin-top: 2px; }
+.stat .d { font-size: 12px; color: var(--muted); }
+.stat.wide { grid-column: 1 / -1; }
+
+/* signal cards */
+.signals { display: grid; gap: 8px; margin-top: 14px; }
+.signals:empty { display: none; }
+.sig { border-radius: 14px; padding: 12px 14px; background: var(--g-soft); }
+.sig.y { background: var(--y-soft); }
+.sig.r { background: var(--r-soft); }
+.sig summary { list-style: none; cursor: pointer; display: flex; gap: 10px; align-items: flex-start; }
+.sig summary::-webkit-details-marker { display: none; }
+.sig .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; margin-top: 7px; background: var(--g); }
+.sig.y .dot { background: var(--y); }
+.sig.r .dot { background: var(--r); }
+.sig .t { font-weight: 700; font-size: 15px; }
+.sig .s { font-size: 13px; color: var(--muted); }
+.sig .more { font-size: 13px; margin: 8px 0 0 20px; color: var(--ink); }
+.sig summary .why { margin-left: auto; font-size: 12px; color: var(--muted); white-space: nowrap; padding-top: 3px; }
+.sig[open] summary .why { visibility: hidden; }
+
+/* next measure / banners */
+.next { display: flex; align-items: center; gap: 12px; }
+.next .dd { font-size: 26px; font-weight: 800; color: var(--accent); min-width: 72px; text-align: center; }
+.next .txt { flex: 1; font-size: 14px; }
+.next .txt b { display: block; font-size: 15px; }
+.homebar { display: flex; align-items: center; gap: 10px; background: var(--ink); color: var(--bg); }
+.homebar .txt { flex: 1; font-size: 14px; }
+.homebar .txt b { display: block; font-size: 15px; }
+.homebar .x { background: none; border: 0; color: inherit; opacity: .6; font-size: 20px; cursor: pointer; padding: 4px; }
+
+/* chart */
+.chart-tabs, .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chart-tabs button, .chips button {
+  font: inherit; font-size: 14px; padding: 7px 12px; border-radius: 99px; border: 1.5px solid var(--line);
+  background: transparent; color: var(--ink); cursor: pointer;
+}
+.chart-tabs button[aria-pressed="true"], .chips button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+#bfChips .food-chip { display: inline-flex; align-items: stretch; border: 1.5px solid var(--line); border-radius: 99px; max-width: 100%; }
+#bfChips .food-chip.selected { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+#bfChips .food-chip button { border: 0; padding: 7px 12px; color: inherit; }
+#bfChips .food-chip.selected button:first-child { padding-right: 7px; border-radius: 99px 0 0 99px; }
+#bfChips .food-chip .food-quantity { min-width: 44px; border-left: 1px solid var(--line); border-radius: 0 99px 99px 0; padding-left: 8px; padding-right: 10px; text-decoration: underline; text-underline-offset: 3px; }
+#bfChips .food-chip button:focus-visible { outline: 2px solid var(--ink); outline-offset: -3px; }
+svg text { fill: var(--muted); font-size: 11px; }
+.history { list-style: none; padding: 0; margin: 8px 0 0; }
+.history li { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.history button { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; cursor: pointer; padding: 4px 8px; }
+
+/* lists */
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.list li:first-child { border-top: 0; padding-top: 0; }
+.list .emo { font-size: 20px; flex: none; width: 26px; text-align: center; }
+.list b { display: block; font-size: 15px; }
+.list span { color: var(--muted); font-size: 13px; }
+.pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); margin-left: 4px; vertical-align: 2px; }
+
+/* weekly diet */
+.diet { display: grid; gap: 10px; }
+.diet .it { display: grid; grid-template-columns: 26px 1fr auto; gap: 10px; align-items: center; }
+.diet .it .emo { font-size: 20px; text-align: center; }
+.diet .name { font-size: 14px; display: flex; justify-content: space-between; }
+.diet .name span { color: var(--muted); font-size: 13px; }
+.bar { height: 8px; border-radius: 99px; background: var(--bg); overflow: hidden; margin-top: 4px; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; transition: width .2s; }
+.bar i.full { background: var(--g); }
+.plus { font: inherit; font-size: 20px; width: 40px; height: 40px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+.score { text-align: center; font-size: 14px; color: var(--muted); margin-top: 12px; }
+.score b { color: var(--ink); font-size: 18px; }
+
+/* faq */
+.faq details { border-top: 1px solid var(--line); padding: 12px 0; }
+.faq details:first-child { border-top: 0; padding-top: 0; }
+.faq summary { list-style: none; cursor: pointer; font-weight: 700; font-size: 15px; display: flex; gap: 8px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: '+'; margin-left: auto; color: var(--muted); font-weight: 400; }
+.faq details[open] summary::after { content: '−'; }
+.faq .ans { font-size: 14px; margin: 8px 0 0; }
+.faq table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+.faq td { padding: 6px 4px; border-top: 1px solid var(--line); }
+.faq tr.me td { background: var(--accent-soft); font-weight: 700; }
+.src { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+.sig .src { margin-left: 20px; }
+.chips + .signals { margin-top: 4px; }
+
+/* checklist cards (always open) */
+.cc { border-radius: 16px; padding: 16px; background: var(--g-soft); border-left: 5px solid var(--g); }
+.cc.y { background: var(--y-soft); border-left-color: var(--y); }
+.cc.r { background: var(--r-soft); border-left-color: var(--r); }
+.cc .q { font-size: 13px; color: var(--muted); }
+.cc .tt { font-size: 17px; font-weight: 800; line-height: 1.4; margin: 2px 0 10px; }
+.cc .lab { font-size: 13px; font-weight: 700; margin: 10px 0 4px; }
+.cc ul { margin: 0; padding-left: 18px; }
+.cc li { font-size: 14px; line-height: 1.65; margin: 3px 0; }
+.cc .src { margin-top: 10px; }
+.cc .pill { margin-left: 6px; }
+.cc .row2 { font-size: 14px; line-height: 1.6; margin: 4px 0; }
+.cc .row2 b { display: inline-block; min-width: 76px; color: var(--muted); font-weight: 600; font-size: 13px; }
+.cc .sigs { display: inline-block; font-size: 12px; font-weight: 700; color: #fff; background: var(--r); border-radius: 99px; padding: 2px 8px; margin-left: 6px; vertical-align: 2px; }
+.cards { display: grid; gap: 10px; margin-top: 12px; }
+.step { font-size: 15px; font-weight: 700; margin: 14px 0 8px; }
+.step:first-of-type { margin-top: 0; }
+.step small { font-weight: 400; color: var(--muted); font-size: 13px; }
+.note { font-size: 13px; color: var(--muted); background: var(--bg); border-radius: 12px; padding: 10px 12px; margin-top: 12px; line-height: 1.6; }
+
+/* kids */
+.kids { display: flex; gap: 6px; overflow-x: auto; margin: 0 0 12px; padding-bottom: 2px; }
+.kids button { flex: none; font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 99px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+.kids button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; font-weight: 700; }
+.kids button[data-kid="new"] { color: var(--accent); border-style: dashed; }
+
+/* challenge */
+.chal-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.chal-head b { font-size: 26px; font-weight: 800; }
+.chal-head span { color: var(--muted); margin-left: 4px; }
+.chal-meta { font-size: 14px; color: var(--muted); }
+.chal-meta b { font-size: 16px; color: var(--accent); }
+.stamps { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.stamp { aspect-ratio: 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--muted); background: var(--bg); }
+.stamp.ok { background: var(--accent-soft); font-size: 18px; }
+.stamp.today { border: 2px solid var(--accent); color: var(--accent); font-weight: 700; }
+.stamp.miss { opacity: .45; }
+.missions { display: grid; gap: 8px; }
+.missions button { display: flex; align-items: center; gap: 10px; font: inherit; font-size: 15px; text-align: left; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+.missions button span { font-size: 20px; }
+.missions button i { margin-left: auto; font-style: normal; font-weight: 800; color: var(--g); }
+.missions button[aria-pressed="true"] { border-color: var(--g); background: var(--g-soft); }
+
+/* breakfast */
+.seg3 { grid-template-columns: repeat(3, 1fr); }
+.seg3 button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.bfsum { background: var(--bg); border-radius: 14px; padding: 14px; margin-top: 16px; }
+.bfsum .big2 { font-size: 22px; font-weight: 800; }
+.bfsum .big2 small { font-size: 14px; color: var(--muted); font-weight: 500; margin-left: 4px; }
+.macro { display: flex; height: 14px; border-radius: 99px; overflow: hidden; margin: 10px 0 6px; background: var(--line); }
+.macro i { display: block; height: 100%; }
+.legend { display: flex; gap: 12px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.legend b { color: var(--ink); }
+.legend span::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; background: var(--c); }
+.nrow { display: grid; grid-template-columns: 78px 1fr 70px; gap: 8px; align-items: center; font-size: 14px; padding: 5px 0; }
+/* Nutrient provenance: green food, purple assumed supplements, neutral gap. */
+.nutrient-key { display: flex; flex-wrap: wrap; gap: 16px; margin: 8px 0 12px; font-size: 13px; color: var(--ink); }
+.nutrient-key span { display: inline-flex; align-items: center; gap: 5px; }
+.nutrient-key i { width: 12px; height: 12px; border-radius: 3px; }
+.food-fill { background: #328264; }
+.supp-fill { background: #7861b5; }
+.gap-fill { background: #e0dcd7; }
+.nrow .nutrient-bar { display: flex; height: 14px; }
+.nrow .nutrient-bar i { border-radius: 0; flex: 0 0 auto; }
+.nrow .nutrient-bar .food-fill { background: #328264; }
+.nrow .nutrient-bar .supp-fill { background: #7861b5; }
+.nrow .nutrient-bar .gap-fill { background: #e0dcd7; }
+.nutrient-status { font-size: 12px; font-weight: 700; text-align: right; color: var(--ink); }
+.nrow .bar { margin: 0; height: 14px; }
+.nrow .st { font-size: 12px; font-weight: 700; text-align: right; }
+.nrow .st.g { color: var(--g); } .nrow .st.y { color: var(--y); } .nrow .st.r { color: var(--r); }
+.nrow .bar i.g { background: var(--g); } .nrow .bar i.y { background: var(--y); } .nrow .bar i.r { background: var(--r); }
+
+.quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; }
+.quick a { text-decoration: none; text-align: center; }
+.quick .hot { background: var(--accent-soft); color: var(--accent); }
+.quick button, .quick a { font: inherit; font-size: 13px; line-height: 1.35; font-weight: 700; color: var(--ink); background: var(--bg); border: 0; border-radius: 14px; padding: 12px 4px; cursor: pointer; }
+.quick button span, .quick a span { display: block; font-size: 24px; margin-bottom: 4px; }
+
+.promo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); background: var(--accent-soft); }
+.promo .emo { font-size: 30px; }
+.promo b { display: block; font-size: 16px; }
+.promo span:nth-child(2) { font-size: 13px; color: var(--muted); flex: 1; }
+.promo .go { font-size: 28px; color: var(--accent); }
+
+.privacy { font-size: 13px; line-height: 1.6; background: var(--g-soft); border-radius: 12px; padding: 10px 12px; margin-top: 12px; }
+.privacy b { font-weight: 700; }
+.promo-ad { border: 1.5px solid var(--line); }
+.promo-ad .ad { display: inline-block; font-size: 11px; font-weight: 700; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+.promo-ad .pname { font-size: 21px; font-weight: 800; margin-top: 8px; }
+.promo-ad .ptag { font-size: 14px; color: var(--accent); font-weight: 700; margin-top: 2px; }
+.promo-ad .pdesc { font-size: 14px; line-height: 1.6; margin: 10px 0 12px; }
+.promo-ad .fine { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 10px 0 0; }
+textarea { width: 100%; font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 12px; padding: 10px; resize: vertical; word-break: break-all; }
+
+/* tabs */
+nav.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--card); border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(5, 1fr); padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+}
+nav.tabs button { font: inherit; font-size: 11px; background: none; border: 0; color: var(--muted); padding: 6px 0; cursor: pointer; }
+nav.tabs button span { display: block; font-size: 22px; line-height: 1.2; }
+nav.tabs button[aria-selected="true"] { color: var(--accent); font-weight: 700; }
+
+.cta { text-align: center; background: var(--accent-soft); }
+.cta p { margin: 0 0 12px; font-size: 15px; }
+.cta a { display: inline-block; font-weight: 700; color: #fff; background: var(--accent); padding: 12px 20px; border-radius: 99px; text-decoration: none; }
+footer { font-size: 12px; color: var(--muted); text-align: center; padding: 4px 8px 0; }
+footer p { margin: 0 0 6px; }
+
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+.modal .sheet { background: var(--card); border-radius: 20px; padding: 18px; width: 100%; max-width: 400px; max-height: 100%; overflow: auto; text-align: center; }
+.modal img { width: 100%; border-radius: 12px; display: block; -webkit-touch-callout: default; }
+.modal p { font-size: 15px; margin: 14px 0 0; }
+.steps { text-align: left; margin: 12px 0 0; padding-left: 22px; font-size: 15px; }
+.steps li { margin: 6px 0; }
+.meal-guide { margin: 16px 0; border-block: 1px solid var(--line); padding: 12px 0; }
+.meal-guide summary { cursor: pointer; line-height: 1.6; }
+.meal-guide summary small { font-weight: normal; }
+.meal-guide label { display: block; margin: 14px 0 6px; font-weight: 700; }
+.meal-guide select { width: 100%; min-width: 0; min-height: 44px; color: var(--ink); background: var(--card, #fff); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: inherit; }
+.meal-guide p, .meal-guide li { line-height: 1.7; overflow-wrap: anywhere; }
+.meal-guide a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.meal-guide summary:focus-visible, .meal-guide select:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+</style>
+<style>
+.profile { font-size: 14px; color: var(--muted); }
+.profile b { color: var(--ink); }
+.weekbars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; align-items: end; }
+.wb { text-align: center; font-size: 12px; color: var(--muted); }
+.wb .col { height: 90px; background: var(--bg); border-radius: 10px; display: flex; align-items: flex-end; overflow: hidden; }
+.wb .col i { display: block; width: 100%; background: var(--accent); border-radius: 10px 10px 0 0; }
+.wb b { display: block; color: var(--ink); font-size: 13px; margin-top: 4px; }
+.wb.now span { color: var(--accent); font-weight: 700; }
+nav.tabs { grid-template-columns: repeat(2, 1fr) !important; }
+nav.tabs button { font-size: 13px !important; }
+.promo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); background: var(--accent-soft); }
+.promo .emo { font-size: 30px; }
+.promo b { display: block; font-size: 16px; }
+.promo span:nth-child(2) { font-size: 13px; color: var(--muted); flex: 1; }
+.promo .go { font-size: 28px; color: var(--accent); }
+#bfChips { display: block; }
+.fcat .chips { margin-bottom: 0; }
+.fcat { margin-bottom: 12px; }
+.fcat-h { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+.flist { display: grid; gap: 6px; }
+.fitem { display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); }
+.fitem.on { border-color: var(--accent); background: var(--accent-soft); }
+.fname { flex: 1; font: inherit; font-size: 15px; text-align: left; background: none; border: 0; color: var(--ink); padding: 11px 12px; cursor: pointer; }
+.fname small { color: var(--muted); font-size: 12px; margin-left: 2px; }
+.fitem.on .fname { font-weight: 700; }
+.stepper { display: flex; align-items: center; gap: 2px; padding-right: 6px; }
+.stepper button { font: inherit; font-size: 18px; width: 34px; height: 34px; border-radius: 10px; border: 0; background: var(--card); color: var(--accent); cursor: pointer; }
+.stepper b { min-width: 26px; text-align: center; font-size: 16px; }
+#bfSupps .pr { border-color: var(--accent); }
+.tomorrow .tt .up { color: var(--g); }
+.tomorrow .tt small { font-size: 14px; color: var(--g); margin-left: 4px; }
+.meal-guide { margin: 16px 0; border-block: 1px solid var(--line); padding: 12px 0; }
+.meal-guide summary { cursor: pointer; line-height: 1.6; }
+.meal-guide summary small { font-weight: normal; }
+.meal-guide label { display: block; margin: 14px 0 6px; font-weight: 700; }
+.meal-guide select { width: 100%; min-width: 0; min-height: 44px; color: var(--ink); background: var(--card, #fff); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: inherit; }
+.meal-guide p, .meal-guide li { line-height: 1.7; overflow-wrap: anywhere; }
+.meal-guide a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.meal-guide summary:focus-visible, .meal-guide select:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+</style>
+<style>
+/* Scoped mobile simplification; existing palette retained. */
+#bfCard p, #bfCard summary, #bfCard button, .nrow, .nutrient-status, .nutrient-key { font-size: 16px; }
+#bfCard .hint, #bfCard small { font-size: 14px; line-height: 1.55; }
+#bfCard button, #bfCard summary, .linkbtn { min-height: 44px; }
+#bfCard summary { display: flex; align-items: center; cursor: pointer; }
+#bfMenuGuide > summary { gap: 6px; }
+.btn:not(.ghost), .cta a, .kids button[aria-pressed="true"] { background: #a84434; color: #fff; }
+#bfCard summary::before { content: '＋'; margin-right: 8px; }
+#bfCard details[open] > summary::before { content: '−'; }
+#bfCard .bfsum { margin-top: 12px; text-align: center; }
+.food-score { margin: 8px 0 10px; color: var(--ink); }
+.food-score-label { font-size: 16px; font-weight: 600; line-height: 1.4; }
+.food-score-value { display: flex; align-items: baseline; justify-content: center; gap: 4px; margin-top: 4px; line-height: 1; font-variant-numeric: tabular-nums; }
+.food-score-value strong { font-size: 64px; font-weight: 800; letter-spacing: -0.035em; }
+.food-score-value span { font-size: 22px; font-weight: 600; }
+#bfCard .bfsum .preview-note { font-size: 14px; color: var(--muted); margin: 0 0 4px; }
+#bfCard .preview-note .linkbtn { font-size: 14px; }
+#bfCard .bfsum p, .supp-result p, .next-meal p { margin: 6px 0; }
+.supp-result { min-height: 72px; padding: 10px 0; line-height: 1.6; }
+.next-meal { margin: 16px 0; padding-block: 12px; border-block: 1px solid var(--line); line-height: 1.6; }
+.meal-details { margin: 12px 0; line-height: 1.65; }
+.meal-details ul { padding-left: 20px; }
+.nrow { grid-template-columns: 82px minmax(30px,1fr) 86px; gap: 7px; }
+.nutrient-key { gap: 10px; }
+.omega-record { line-height: 1.6; }
+#bfSupps .pr { border-color: var(--line); }
+button:focus-visible, summary:focus-visible { outline: 3px solid #328264; outline-offset: 3px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <a class="tag" href="https://www.instagram.com/zzin__yaksa/" target="_blank" rel="noopener">@zzin__yaksa</a>
+    <h1>우리 아이 아침밥, 몇 점일까?</h1>
+    <p>애둘 약사아빠 찐약사가 만든 우리 아이 영양 체크</p>
+  </header>
+
+  <nav class="kids" id="kids" hidden aria-label="아이 선택"></nav>
+
+  <section class="card profile">
+    <div id="profileLine"></div>
+    <div id="profileForm" hidden>
+      <label for="nick">아이 애칭 <small>(선택)</small></label>
+      <input id="nick" placeholder="예: 지우" maxlength="10">
+      <label>성별</label>
+      <div class="seg" role="group" aria-label="성별">
+        <button type="button" data-sex="male" aria-pressed="true">남아</button>
+        <button type="button" data-sex="female" aria-pressed="false">여아</button>
+      </div>
+      <div class="row">
+        <div><label for="birth">생년월일</label><input id="birth" type="date"></div>
+        <div><label for="weight">몸무게 (kg)</label><input id="weight" inputmode="decimal" placeholder="선택"></div>
+      </div>
+      <div class="privacy">🔒 <b>입력한 정보는 서버로 보내지 않고 이 휴대폰에만 저장돼요.</b> 로그인 없이 다음에 열어도 그대로 남아 있어요. 다른 휴대폰·브라우저에서는 보이지 않으니, 휴대폰을 바꿀 땐 맨 아래 <b>기록 백업</b>을 이용해 주세요.</div>
+      <button class="btn" id="saveP" type="button">저장</button>
+      <button class="btn ghost" id="cancelP" type="button">취소</button>
+      <p class="err" id="perr"></p>
+    </div>
+  </section>
+
+  <section class="card tip">
+    <div class="emo" id="tipEmo"></div>
+    <div><span>오늘의 영양 한 줄</span><b id="tipText"></b></div>
+  </section>
+
+  <!-- ===== 아침밥 점수 ===== -->
+  <div data-panel="bf">
+    <section class="card" id="bfCard">
+      <h2>🍳 오늘 아침밥 체크</h2>
+      <p class="step">① 먹은 음식을 눌러 양을 골라 주세요<br><small>음식 이름은 양 늘리기 · 분량은 양 줄이기</small></p>
+      <div class="chips" id="bfChips"></div>
+      <details class="meal-guide" id="bfMenuGuide">
+        <summary>아침 메뉴·성장 포인트 보기 <small>15가지 아이디어</small></summary>
+        <label for="bfMenuIdea">참고할 메뉴</label>
+        <select id="bfMenuIdea"></select>
+        <div id="bfMenuPoint" aria-live="polite"></div>
+        <p class="hint">메뉴를 골라도 섭취 기록이나 점수는 바뀌지 않아요. 실제 먹은 음식과 양을 위에서 선택해 주세요. 목록에 없는 식품·조리유는 계산에 포함되지 않아 실제 식사의 영양량과 차이가 있을 수 있어요.</p>
+        <details class="hint"><summary>식사와 함께 챙길 성장 습관</summary>
+          <ul><li>달걀·두부·고기·생선 등 단백질 식품을 아침에 곁들여 보세요. 한 가지를 먹었다고 필요한 양이 모두 충족되는 것은 아니에요.</li>
+          <li>잠들고 일어나는 시간을 일정하게 유지해요. 6~12세는 하루 9~12시간, 13~17세는 8~10시간 수면을 참고해요. <a href="https://www.cdc.gov/healthy-schools/sleep/index.html" target="_blank" rel="noopener noreferrer">수면 기준</a></li>
+          <li>6~17세는 즐거운 신체활동을 하루 60분 이상 목표로 해요. 특정 운동이나 식사가 키 증가를 보장하지는 않아요. <a href="https://www.cdc.gov/physical-activity-basics/guidelines/children.html" target="_blank" rel="noopener noreferrer">활동 기준</a></li></ul>
+        </details>
+      </details>
+      <details class="meal-details" id="bfAmountDetails">
+        <summary id="bfAmountLabel">전체 양 보정 · 현재 1배</summary>
+        <p>음식별로 양을 골랐다면 1배로 두세요. 이전 보정값도 그대로 적용돼요.</p>
+        <div class="seg seg3" id="bfAmt">
+          <button type="button" data-a="0.5">0.5배</button>
+          <button type="button" data-a="1">1배</button>
+          <button type="button" data-a="1.5">1.5배</button>
+        </div>
+      </details>
+      <div id="bfLegacy" class="note" hidden></div>
+      <div id="bfFoodResult"></div>
+      <div id="bfSuppSection" hidden>
+        <p class="step">오늘 먹은 영양제가 있나요?</p>
+        <p class="hint">함량 확인 전: 선택한 성분이 이번 기준까지 채워진다고 가정해요.</p>
+        <div class="chips" id="bfSupps"></div>
+      </div>
+      <div id="bfResult"></div>
+    </section>
+
+    <section class="card">
+      <h2>📅 이번 주 함께 본 참고 점수</h2>
+      <div id="week"></div>
+    </section>
+  </div>
+
+  <!-- ===== 영양 체크 ===== -->
+  <div data-panel="nutri" hidden>
+    <section class="card">
+      <h2>🔍 우리 아이 영양 체크</h2>
+      <p class="step">① 잘 <b>안</b> 먹는 음식을 모두 골라 주세요</p>
+      <div class="chips" id="foodChips"></div>
+      <p class="step">② 요즘 이런 모습이 있나요? <small>상담 참고</small></p>
+      <div class="chips" id="signChips"></div>
+      <div id="nutriResult"></div>
+    </section>
+  </div>
+
+  <section class="card promo-ad" id="promoAd"></section>
+
+  <section class="card cta">
+    <p>아이 영양·영양제 궁금한 건<br>약사가 직접 알려드려요</p>
+    <a href="https://www.instagram.com/zzin__yaksa/" target="_blank" rel="noopener">@zzin__yaksa 팔로우하기</a>
+  </section>
+
+  <footer>
+    <p>음식 안내는 『자란다』 등을, 아침 영양 기준은 2025 한국인 영양소 섭취기준을 참고했어요.</p>
+    <p>점수와 영양소는 음식 1회 분량 기준의 대략적인 추정치예요. 의학적 진단을 대신하지 않아요.</p>
+    <p>🔒 입력한 정보는 서버로 보내지 않고 이 휴대폰에만 저장돼요. <button class="linkbtn" id="backupOpen" type="button">💾 기록 백업·복원</button></p>
+    <p><button class="linkbtn" id="srcOpen" type="button">📚 참고 자료 보기</button></p>
+  </footer>
+</main>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" data-tab="bf" aria-selected="true"><span>🍳</span>아침밥 점수</button>
+  <button role="tab" data-tab="nutri" aria-selected="false"><span>🔍</span>영양 체크</button>
+</nav>
+
+<div class="modal" id="backupModal" hidden>
+  <div class="sheet" style="text-align:left">
+    <h2 style="margin:0 0 8px">💾 기록 백업 · 복원</h2>
+    <p class="hint" style="margin:0 0 6px">휴대폰을 바꾸거나 브라우저 기록을 지우기 전에 코드를 복사해 두세요. 성장·아침밥 두 앱의 기록이 함께 저장돼요.</p>
+    <textarea id="backupCode" readonly rows="3"></textarea>
+    <button class="btn" id="backupCopy" type="button">백업 코드 복사</button>
+    <p class="step" style="margin-top:18px">새 휴대폰에서 복원하기</p>
+    <textarea id="restoreCode" rows="3" placeholder="복사해 둔 코드를 붙여넣어 주세요"></textarea>
+    <button class="btn ghost" id="backupRestore" type="button">복원하기</button>
+    <p class="hint" id="backupMsg"></p>
+    <button class="btn ghost" data-close type="button">닫기</button>
+  </div>
+</div>
+
+<div class="modal" id="cardModal" hidden>
+  <div class="sheet">
+    <img id="cardImg" alt="결과 카드">
+    <p><b>이미지를 길게 눌러 저장</b>한 뒤<br>인스타 스토리에 올려 보세요</p>
+    <a class="btn" id="cardDl" download="card.png">이미지 저장</a>
+    <button class="btn ghost" data-close type="button">닫기</button>
+  </div>
+</div>
+
+<div class="modal" id="srcModal" hidden>
+  <div class="sheet" style="text-align:left">
+    <h2 style="margin:0 0 8px">📚 참고 자료</h2>
+    <ul class="list" id="srcList"></ul>
+    <button class="btn ghost" data-close type="button">닫기</button>
+  </div>
+</div>
+
+<script src="nutrition.js?v=20261103-score-focus1"></script>
+<script src="shared.js?v=202610200659"></script>
+<script src="meal.js?v=20261103-score-focus1"></script>
+</body>
+</html>
