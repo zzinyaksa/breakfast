@@ -4,11 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>우리 아이 아침밥 몇 점?</title>
-<meta name="description" content="오늘 먹은 음식을 기록하고 음식 점수와 영양제 가정 기여, 다음 끼니에 할 일 하나를 확인해요.">
+<meta name="description" content="오늘 아침 먹은 음식을 고르면 영양 점수와 부족한 영양소, 저녁에 챙길 음식을 알려드려요.">
 <meta property="og:title" content="우리 아이 아침밥, 몇 점일까?">
 <meta property="og:description" content="약사아빠가 만든 아침밥 영양 점수 · @zzin__yaksa">
 <meta property="og:type" content="website">
-<meta property="og:image" content="og-image.png">
+<meta property="og:url" content="https://zzinyaksa.github.io/breakfast/">
+<meta property="og:image" content="https://zzinyaksa.github.io/breakfast/og-image.png">
+<link rel="canonical" href="https://zzinyaksa.github.io/breakfast/">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -18,7 +20,6 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="아침밥 점수">
 <style>
-[hidden] { display: none !important; }
 :root {
   --bg: #f7f1ea; --card: #ffffff; --ink: #2b2522; --muted: #7a6f68; --line: #eadfd4;
   --accent: #e2725b; --accent-soft: #fbe3dc; --boy: #4f86c6; --girl: #e0708f;
@@ -50,6 +51,8 @@ h1 { font-size: 24px; margin: 10px 0 4px; letter-spacing: -0.5px; }
 header p { margin: 0; color: var(--muted); font-size: 14px; }
 .card { background: var(--card); border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
 .card h2 { font-size: 17px; margin: 0 0 12px; }
+.card h2.bfh { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.resetbtn { font: inherit; font-size: 13px; font-weight: 600; color: var(--muted); background: var(--card); border: 1.5px solid var(--line); border-radius: 99px; padding: 5px 12px; cursor: pointer; }
 .card h2 small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 4px; }
 label { display: block; font-size: 14px; color: var(--muted); margin: 12px 0 6px; }
 input {
@@ -129,12 +132,6 @@ input:focus { border-color: var(--accent); }
   background: transparent; color: var(--ink); cursor: pointer;
 }
 .chart-tabs button[aria-pressed="true"], .chips button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
-#bfChips .food-chip { display: inline-flex; align-items: stretch; border: 1.5px solid var(--line); border-radius: 99px; max-width: 100%; }
-#bfChips .food-chip.selected { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
-#bfChips .food-chip button { border: 0; padding: 7px 12px; color: inherit; }
-#bfChips .food-chip.selected button:first-child { padding-right: 7px; border-radius: 99px 0 0 99px; }
-#bfChips .food-chip .food-quantity { min-width: 44px; border-left: 1px solid var(--line); border-radius: 0 99px 99px 0; padding-left: 8px; padding-right: 10px; text-decoration: underline; text-underline-offset: 3px; }
-#bfChips .food-chip button:focus-visible { outline: 2px solid var(--ink); outline-offset: -3px; }
 svg text { fill: var(--muted); font-size: 11px; }
 .history { list-style: none; padding: 0; margin: 8px 0 0; }
 .history li { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-top: 1px solid var(--line); font-size: 14px; }
@@ -183,6 +180,16 @@ svg text { fill: var(--muted); font-size: 11px; }
 .cc.r { background: var(--r-soft); border-left-color: var(--r); }
 .cc .q { font-size: 13px; color: var(--muted); }
 .cc .tt { font-size: 17px; font-weight: 800; line-height: 1.4; margin: 2px 0 10px; }
+.fixcard { margin-top: 14px; }
+.fixcard .fx-h { font-size: 18px; letter-spacing: -0.3px; font-weight: 800; color: var(--ink); margin: 0 0 8px; }
+.fixcard .fx-list { list-style: none; padding: 0; margin: 0; }
+.fixcard .fx-list li { display: flex; flex-direction: column; padding: 8px 0; border-top: 1px dashed var(--line); line-height: 1.45; }
+.fixcard .fx-list li:first-child { border-top: 0; }
+.fixcard .fx-list b { font-size: 16px; font-weight: 700; color: var(--ink); }
+.fixcard .fx-list span { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.fixcard .fx-list li.fx-d { background: var(--card); border: 0; border-radius: 12px; padding: 10px 12px; margin-top: 6px; }
+.fixcard .fx-list li.fx-d b { font-size: 15px; }
+.fixcard .fx-sub { font-size: 12.5px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
 .cc .lab { font-size: 13px; font-weight: 700; margin: 10px 0 4px; }
 .cc ul { margin: 0; padding-left: 18px; }
 .cc li { font-size: 14px; line-height: 1.65; margin: 3px 0; }
@@ -225,6 +232,9 @@ svg text { fill: var(--muted); font-size: 11px; }
 .seg3 button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 700; }
 .bfsum { background: var(--bg); border-radius: 14px; padding: 14px; margin-top: 16px; }
 .bfsum .big2 { font-size: 22px; font-weight: 800; }
+.bfsum .big2 .nw { white-space: nowrap; }
+.bfsum .big2 .plus { color: #2f8fc4; }
+.bfsum .big2 .tot { color: var(--accent); }
 .bfsum .big2 small { font-size: 14px; color: var(--muted); font-weight: 500; margin-left: 4px; }
 .macro { display: flex; height: 14px; border-radius: 99px; overflow: hidden; margin: 10px 0 6px; background: var(--line); }
 .macro i { display: block; height: 100%; }
@@ -232,20 +242,7 @@ svg text { fill: var(--muted); font-size: 11px; }
 .legend b { color: var(--ink); }
 .legend span::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; background: var(--c); }
 .nrow { display: grid; grid-template-columns: 78px 1fr 70px; gap: 8px; align-items: center; font-size: 14px; padding: 5px 0; }
-/* Nutrient provenance: green food, purple assumed supplements, neutral gap. */
-.nutrient-key { display: flex; flex-wrap: wrap; gap: 16px; margin: 8px 0 12px; font-size: 13px; color: var(--ink); }
-.nutrient-key span { display: inline-flex; align-items: center; gap: 5px; }
-.nutrient-key i { width: 12px; height: 12px; border-radius: 3px; }
-.food-fill { background: #328264; }
-.supp-fill { background: #7861b5; }
-.gap-fill { background: #e0dcd7; }
-.nrow .nutrient-bar { display: flex; height: 14px; }
-.nrow .nutrient-bar i { border-radius: 0; flex: 0 0 auto; }
-.nrow .nutrient-bar .food-fill { background: #328264; }
-.nrow .nutrient-bar .supp-fill { background: #7861b5; }
-.nrow .nutrient-bar .gap-fill { background: #e0dcd7; }
-.nutrient-status { font-size: 12px; font-weight: 700; text-align: right; color: var(--ink); }
-.nrow .bar { margin: 0; height: 14px; }
+.nrow .bar { margin: 0; height: 10px; }
 .nrow .st { font-size: 12px; font-weight: 700; text-align: right; }
 .nrow .st.g { color: var(--g); } .nrow .st.y { color: var(--y); } .nrow .st.r { color: var(--r); }
 .nrow .bar i.g { background: var(--g); } .nrow .bar i.y { background: var(--y); } .nrow .bar i.r { background: var(--r); }
@@ -293,25 +290,11 @@ footer p { margin: 0 0 6px; }
 .modal p { font-size: 15px; margin: 14px 0 0; }
 .steps { text-align: left; margin: 12px 0 0; padding-left: 22px; font-size: 15px; }
 .steps li { margin: 6px 0; }
-.meal-guide { margin: 16px 0; border-block: 1px solid var(--line); padding: 12px 0; }
-.meal-guide summary { cursor: pointer; line-height: 1.6; }
-.meal-guide summary small { font-weight: normal; }
-.meal-guide label { display: block; margin: 14px 0 6px; font-weight: 700; }
-.meal-guide select { width: 100%; min-width: 0; min-height: 44px; color: var(--ink); background: var(--card, #fff); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: inherit; }
-.meal-guide p, .meal-guide li { line-height: 1.7; overflow-wrap: anywhere; }
-.meal-guide a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
-.meal-guide summary:focus-visible, .meal-guide select:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 </style>
 <style>
 .profile { font-size: 14px; color: var(--muted); }
 .profile b { color: var(--ink); }
-.weekbars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; align-items: end; }
-.wb { text-align: center; font-size: 12px; color: var(--muted); }
-.wb .col { height: 90px; background: var(--bg); border-radius: 10px; display: flex; align-items: flex-end; overflow: hidden; }
-.wb .col i { display: block; width: 100%; background: var(--accent); border-radius: 10px 10px 0 0; }
-.wb b { display: block; color: var(--ink); font-size: 13px; margin-top: 4px; }
-.wb.now span { color: var(--accent); font-weight: 700; }
-nav.tabs { grid-template-columns: repeat(2, 1fr) !important; }
+nav.tabs { grid-template-columns: repeat(2, 1fr) !important; } /* 영양 체크 탭은 아직 비공개 (열 때 3으로) */
 nav.tabs button { font-size: 13px !important; }
 .promo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); background: var(--accent-soft); }
 .promo .emo { font-size: 30px; }
@@ -319,6 +302,8 @@ nav.tabs button { font-size: 13px !important; }
 .promo span:nth-child(2) { font-size: 13px; color: var(--muted); flex: 1; }
 .promo .go { font-size: 28px; color: var(--accent); }
 #bfChips { display: block; }
+.suppbox { background: var(--bg); border-radius: 16px; padding: 14px; margin-top: 16px; }
+.suppbox .fcat { margin: 10px 0 0; }
 .fcat .chips { margin-bottom: 0; }
 .fcat { margin-bottom: 12px; }
 .fcat-h { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
@@ -332,45 +317,75 @@ nav.tabs button { font-size: 13px !important; }
 .stepper button { font: inherit; font-size: 18px; width: 34px; height: 34px; border-radius: 10px; border: 0; background: var(--card); color: var(--accent); cursor: pointer; }
 .stepper b { min-width: 26px; text-align: center; font-size: 16px; }
 #bfSupps .pr { border-color: var(--accent); }
-.tomorrow .tt .up { color: var(--g); }
-.tomorrow .tt small { font-size: 14px; color: var(--g); margin-left: 4px; }
-.meal-guide { margin: 16px 0; border-block: 1px solid var(--line); padding: 12px 0; }
-.meal-guide summary { cursor: pointer; line-height: 1.6; }
-.meal-guide summary small { font-weight: normal; }
-.meal-guide label { display: block; margin: 14px 0 6px; font-weight: 700; }
-.meal-guide select { width: 100%; min-width: 0; min-height: 44px; color: var(--ink); background: var(--card, #fff); border: 1px solid var(--line); border-radius: 8px; padding: 8px; font: inherit; }
-.meal-guide p, .meal-guide li { line-height: 1.7; overflow-wrap: anywhere; }
-.meal-guide a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
-.meal-guide summary:focus-visible, .meal-guide select:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-</style>
-<style>
-/* Scoped mobile simplification; existing palette retained. */
-#bfCard p, #bfCard summary, #bfCard button, .nrow, .nutrient-status, .nutrient-key { font-size: 16px; }
-#bfCard .hint, #bfCard small { font-size: 14px; line-height: 1.55; }
-#bfCard button, #bfCard summary, .linkbtn { min-height: 44px; }
-#bfCard summary { display: flex; align-items: center; cursor: pointer; }
-#bfMenuGuide > summary { gap: 6px; }
-.btn:not(.ghost), .cta a, .kids button[aria-pressed="true"] { background: #a84434; color: #fff; }
-#bfCard summary::before { content: '＋'; margin-right: 8px; }
-#bfCard details[open] > summary::before { content: '−'; }
-#bfCard .bfsum { margin-top: 12px; text-align: center; }
-.food-score { margin: 8px 0 10px; color: var(--ink); }
-.food-score-label { font-size: 16px; font-weight: 600; line-height: 1.4; }
-.food-score-value { display: flex; align-items: baseline; justify-content: center; gap: 4px; margin-top: 4px; line-height: 1; font-variant-numeric: tabular-nums; }
-.food-score-value strong { font-size: 64px; font-weight: 800; letter-spacing: -0.035em; }
-.food-score-value span { font-size: 22px; font-weight: 600; }
-#bfCard .bfsum .preview-note { font-size: 14px; color: var(--muted); margin: 0 0 4px; }
-#bfCard .preview-note .linkbtn { font-size: 14px; }
-#bfCard .bfsum p, .supp-result p, .next-meal p { margin: 6px 0; }
-.supp-result { min-height: 72px; padding: 10px 0; line-height: 1.6; }
-.next-meal { margin: 16px 0; padding-block: 12px; border-block: 1px solid var(--line); line-height: 1.6; }
-.meal-details { margin: 12px 0; line-height: 1.65; }
-.meal-details ul { padding-left: 20px; }
-.nrow { grid-template-columns: 82px minmax(30px,1fr) 86px; gap: 7px; }
-.nutrient-key { gap: 10px; }
-.omega-record { line-height: 1.6; }
-#bfSupps .pr { border-color: var(--line); }
-button:focus-visible, summary:focus-visible { outline: 3px solid #328264; outline-offset: 3px; }
+.bands { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.bands button { font: inherit; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 14px; padding: 10px 2px; cursor: pointer; line-height: 1.3; }
+.bands button span { display: block; font-size: 22px; }
+.bands button b { display: block; font-size: 14px; }
+.bands button small { font-size: 11px; color: var(--muted); }
+.bands button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.intro { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 14px; }
+.intro div { background: var(--bg); border-radius: 14px; padding: 10px 4px; text-align: center; font-size: 13px; font-weight: 700; line-height: 1.35; }
+.intro span { display: block; font-size: 22px; margin-bottom: 2px; }
+.agetip { margin: 10px 0 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+.recipe .up { color: var(--g); font-weight: 800; }
+.recipe { background: var(--card); border-radius: 12px; padding: 12px; margin-top: 10px; }
+.recipe .rh { display: flex; align-items: center; gap: 8px; }
+.recipe .rh span { font-size: 22px; }
+.recipe .rh b { font-size: 16px; flex: 1; }
+.agetip { margin: 10px 0 0; font-size: 14px; color: var(--sub, #666); line-height: 1.5; }
+.recipe .up { color: var(--g); font-weight: 800; }
+.recipe .rh em { font-style: normal; font-size: 12px; color: var(--g); font-weight: 700; }
+.recipe .rc { font-size: 13px; color: var(--muted); margin: 4px 0; }
+.recipe ol { margin: 4px 0 0; padding-left: 20px; font-size: 14px; line-height: 1.6; }
+.scorebar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 6; font: inherit; font-size: 15px; font-weight: 700; color: #fff; background: var(--ink); border: 0; border-radius: 99px; padding: 12px 20px; box-shadow: 0 4px 14px rgba(0,0,0,.2); cursor: pointer; white-space: nowrap; }
+.scorebar b { color: #ffd38a; font-size: 18px; }
+.less { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.less .lab { font-size: 12px; color: var(--muted); font-weight: 700; margin-right: 2px; }
+.less .lp { font-size: 13px; background: var(--g-soft); border-radius: 99px; padding: 4px 10px; }
+.less .lp.hi { background: var(--y-soft); color: var(--y); font-weight: 700; }
+.pick { display: inline-flex; align-items: stretch; border: 1.5px solid var(--accent); background: var(--accent-soft); border-radius: 99px; overflow: hidden; }
+.pick button { font: inherit; font-size: 14px; border: 0; background: none; cursor: pointer; padding: 7px 4px 7px 12px; color: var(--accent); }
+.pick .qt { padding: 7px 12px 7px 6px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.prod .list li { padding: 8px 0; }
+.prod .list b a { color: var(--accent); }
+.prod .fine { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 8px 0 0; }
+.bar.split { display: flex; }
+.bar.split i { border-radius: 0; }
+.bar.split i:first-child { border-radius: 99px 0 0 99px; }
+.bar.split i:last-child { border-radius: 0 99px 99px 0; }
+.bar.split i:only-child { border-radius: 99px; }
+.nrow .bar i.sp { background: #5bb4e5; }
+.nrow .st.sp { color: #2f8fc4; }
+.prod .pimg, .gblist .pimg { width: 132px; height: 192px; object-fit: contain; flex: none; background: none; border-radius: 0; padding: 0; filter: drop-shadow(0 4px 10px rgba(0,0,0,.18)); }
+.prod .gb, .gblist .gbw { font-style: normal; }
+.prod .gb { white-space: nowrap; display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 99px; margin-left: 6px; vertical-align: 1px; }
+.gb.none { background: var(--line); color: var(--muted); }
+.gbbtn { white-space: nowrap; }
+.gbtop { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.gbtop .gbbtn { margin-top: 0; }
+.gblist li.nofit { opacity: .5; }
+.gutline { margin-top: 12px; font-size: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 9px 12px; }
+.followline { display: block; margin: 10px 2px 0; font-size: 14px; font-weight: 700; color: var(--accent); text-decoration: none; }
+.agetip small { font-size: 12px; color: var(--muted); font-weight: 400; }
+.gblist li > div { min-width: 0; flex: 1; }
+.gbbtn.ask { background: var(--card); color: var(--accent); border: 1.5px solid var(--accent); }
+.pftitle { margin: 4px 0 6px; font-size: 17px; }
+.warnline { font-size: 13px; color: var(--ink); background: var(--accent-soft); border-radius: 10px; padding: 7px 10px; margin-top: 8px; line-height: 1.5; }
+.bfsum .big2 .minus { color: #d4493b; }
+.qopt { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 14px; color: var(--muted); }
+.qopt button { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 99px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+.qopt button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.qopt small { font-size: 12px; }
+.gb.on { background: #ffe3dc; color: #d4472a; } .gb.soon { background: #e3f1fb; color: #2f8fc4; }
+body[data-tab="gb"] .profile, body[data-tab="gb"] #kids { display: none !important; }
+.gblink { display: block; margin: 8px 0 0; font-size: 14px; }
+.gblist li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.gblist li:last-child { border-bottom: 0; }
+.gblist span { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.gbwhen { font-size: 13px; margin-top: 6px; }
+.gbw { color: var(--muted); } .gbw.on { color: #d4472a; } .gbw.soon { color: #2f8fc4; }
+.gbbtn { display: inline-block; margin-top: 8px; padding: 7px 14px; border-radius: 99px; background: var(--accent); color: #fff; font-weight: 700; font-size: 14px; text-decoration: none; }
+.recipe .rp { font-size: 12px; color: var(--muted); margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -386,6 +401,7 @@ button:focus-visible, summary:focus-visible { outline: 3px solid #328264; outlin
   <section class="card profile">
     <div id="profileLine"></div>
     <div id="profileForm" hidden>
+      <h3 id="pfTitle" class="pftitle"></h3>
       <label for="nick">아이 애칭 <small>(선택)</small></label>
       <input id="nick" placeholder="예: 지우" maxlength="10">
       <label>성별</label>
@@ -404,51 +420,18 @@ button:focus-visible, summary:focus-visible { outline: 3px solid #328264; outlin
     </div>
   </section>
 
-  <section class="card tip">
-    <div class="emo" id="tipEmo"></div>
-    <div><span>오늘의 영양 한 줄</span><b id="tipText"></b></div>
-  </section>
-
   <!-- ===== 아침밥 점수 ===== -->
   <div data-panel="bf">
     <section class="card" id="bfCard">
-      <h2>🍳 오늘 아침밥 체크</h2>
-      <p class="step">① 먹은 음식을 눌러 양을 골라 주세요<br><small>음식 이름은 양 늘리기 · 분량은 양 줄이기</small></p>
-      <div class="chips" id="bfChips"></div>
-      <details class="meal-guide" id="bfMenuGuide">
-        <summary>아침 메뉴·성장 포인트 보기 <small>15가지 아이디어</small></summary>
-        <label for="bfMenuIdea">참고할 메뉴</label>
-        <select id="bfMenuIdea"></select>
-        <div id="bfMenuPoint" aria-live="polite"></div>
-        <p class="hint">메뉴를 골라도 섭취 기록이나 점수는 바뀌지 않아요. 실제 먹은 음식과 양을 위에서 선택해 주세요. 목록에 없는 식품·조리유는 계산에 포함되지 않아 실제 식사의 영양량과 차이가 있을 수 있어요.</p>
-        <details class="hint"><summary>식사와 함께 챙길 성장 습관</summary>
-          <ul><li>달걀·두부·고기·생선 등 단백질 식품을 아침에 곁들여 보세요. 한 가지를 먹었다고 필요한 양이 모두 충족되는 것은 아니에요.</li>
-          <li>잠들고 일어나는 시간을 일정하게 유지해요. 6~12세는 하루 9~12시간, 13~17세는 8~10시간 수면을 참고해요. <a href="https://www.cdc.gov/healthy-schools/sleep/index.html" target="_blank" rel="noopener noreferrer">수면 기준</a></li>
-          <li>6~17세는 즐거운 신체활동을 하루 60분 이상 목표로 해요. 특정 운동이나 식사가 키 증가를 보장하지는 않아요. <a href="https://www.cdc.gov/physical-activity-basics/guidelines/children.html" target="_blank" rel="noopener noreferrer">활동 기준</a></li></ul>
-        </details>
-      </details>
-      <details class="meal-details" id="bfAmountDetails">
-        <summary id="bfAmountLabel">전체 양 보정 · 현재 1배</summary>
-        <p>음식별로 양을 골랐다면 1배로 두세요. 이전 보정값도 그대로 적용돼요.</p>
-        <div class="seg seg3" id="bfAmt">
-          <button type="button" data-a="0.5">0.5배</button>
-          <button type="button" data-a="1">1배</button>
-          <button type="button" data-a="1.5">1.5배</button>
-        </div>
-      </details>
-      <div id="bfLegacy" class="note" hidden></div>
-      <div id="bfFoodResult"></div>
-      <div id="bfSuppSection" hidden>
-        <p class="step">오늘 먹은 영양제가 있나요?</p>
-        <p class="hint">함량 확인 전: 선택한 성분이 이번 기준까지 채워진다고 가정해요.</p>
-        <div class="chips" id="bfSupps"></div>
+      <h2 class="bfh">🍳 오늘 아침밥 체크<button class="resetbtn" id="bfReset" type="button">↺ 초기화</button></h2>
+      <div class="intro" id="bfIntro">
+        <div><span>👆</span>먹은 음식<br>누르기</div>
+        <div><span>🍚</span>양 글자 눌러<br>조절하기</div>
+        <div><span>💯</span>점수 보고<br>영양제 체크</div>
       </div>
+      <p class="step">① 오늘 아침에 먹은 걸 골라 주세요 <small>밑줄 친 양을 누르면 바뀌어요</small></p>
+      <div class="chips" id="bfChips"></div>
       <div id="bfResult"></div>
-    </section>
-
-    <section class="card">
-      <h2>📅 이번 주 함께 본 참고 점수</h2>
-      <div id="week"></div>
     </section>
   </div>
 
@@ -458,13 +441,20 @@ button:focus-visible, summary:focus-visible { outline: 3px solid #328264; outlin
       <h2>🔍 우리 아이 영양 체크</h2>
       <p class="step">① 잘 <b>안</b> 먹는 음식을 모두 골라 주세요</p>
       <div class="chips" id="foodChips"></div>
-      <p class="step">② 요즘 이런 모습이 있나요? <small>상담 참고</small></p>
+      <p class="step">② 요즘 이런 모습이 있나요? <small>부족 신호</small></p>
       <div class="chips" id="signChips"></div>
       <div id="nutriResult"></div>
     </section>
   </div>
 
-  <section class="card promo-ad" id="promoAd"></section>
+  <div data-panel="gb" hidden>
+    <section class="card">
+      <h2>🛒 찐약사 공구 일정</h2>
+      <p class="hint" style="margin:0 0 6px">약사 아빠가 성분을 직접 보고 고른 제품만 공동구매로 열어요. 공구 기간에만 참여할 수 있어요.</p>
+      <div id="gbList"></div>
+      <p class="fine" style="font-size:11px;color:var(--muted);line-height:1.5;margin:10px 0 0">음식이 먼저예요. 건강기능식품은 질병의 예방·치료를 위한 의약품이 아니에요. 찐약사가 판매에 참여하는 공동구매 제품이에요.</p>
+    </section>
+  </div>
 
   <section class="card cta">
     <p>아이 영양·영양제 궁금한 건<br>약사가 직접 알려드려요</p>
@@ -472,22 +462,23 @@ button:focus-visible, summary:focus-visible { outline: 3px solid #328264; outlin
   </section>
 
   <footer>
-    <p>음식 안내는 『자란다』 등을, 아침 영양 기준은 2025 한국인 영양소 섭취기준을 참고했어요.</p>
     <p>점수와 영양소는 음식 1회 분량 기준의 대략적인 추정치예요. 의학적 진단을 대신하지 않아요.</p>
-    <p>🔒 입력한 정보는 서버로 보내지 않고 이 휴대폰에만 저장돼요. <button class="linkbtn" id="backupOpen" type="button">💾 기록 백업·복원</button></p>
-    <p><button class="linkbtn" id="srcOpen" type="button">📚 참고 자료 보기</button></p>
   </footer>
 </main>
 
+<button class="scorebar" id="scoreBar" type="button" hidden>🍳 지금 <b id="scoreNum">0</b>점 · 결과 보기 ↓</button>
+
 <nav class="tabs" role="tablist">
   <button role="tab" data-tab="bf" aria-selected="true"><span>🍳</span>아침밥 점수</button>
-  <button role="tab" data-tab="nutri" aria-selected="false"><span>🔍</span>영양 체크</button>
+  <!-- 영양 체크 탭은 아직 비공개. 열 때 아래 줄 주석을 풀고 위 nav.tabs 열 수를 3으로 -->
+  <!-- <button role="tab" data-tab="nutri" aria-selected="false"><span>🔍</span>영양 체크</button> -->
+  <button role="tab" data-tab="gb" aria-selected="false"><span>🛒</span>공구 일정</button>
 </nav>
 
 <div class="modal" id="backupModal" hidden>
   <div class="sheet" style="text-align:left">
     <h2 style="margin:0 0 8px">💾 기록 백업 · 복원</h2>
-    <p class="hint" style="margin:0 0 6px">휴대폰을 바꾸거나 브라우저 기록을 지우기 전에 코드를 복사해 두세요. 성장·아침밥 두 앱의 기록이 함께 저장돼요.</p>
+    <p class="hint" style="margin:0 0 6px">휴대폰을 바꾸거나 브라우저 기록을 지우기 전에 코드를 복사해 두세요.</p>
     <textarea id="backupCode" readonly rows="3"></textarea>
     <button class="btn" id="backupCopy" type="button">백업 코드 복사</button>
     <p class="step" style="margin-top:18px">새 휴대폰에서 복원하기</p>
@@ -515,8 +506,10 @@ button:focus-visible, summary:focus-visible { outline: 3px solid #328264; outlin
   </div>
 </div>
 
-<script src="nutrition.js?v=20261103-score-focus1"></script>
-<script src="shared.js?v=202610200659"></script>
-<script src="meal.js?v=20261103-score-focus1"></script>
+<script src="nutrition.js?v=202611110602"></script>
+<script src="groupbuy.js?v=202611110602"></script>
+<script src="shared.js?v=202611110602"></script>
+<script src="recipes.js?v=202611110602"></script>
+<script src="meal.js?v=202611110602"></script>
 </body>
 </html>

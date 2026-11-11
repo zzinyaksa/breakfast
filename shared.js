@@ -1,5 +1,4 @@
-// 두 앱(성장 · 아침밥)이 함께 쓰는 기능: 공구 안내, 저장 안내·보관 요청, 기록 백업·복원.
-// meal/shared.js는 이 파일의 복사본이다. 수정하면 두 곳 모두 바꿔야 한다.
+// 아침밥 앱의 공구 안내, 저장 안내·보관 요청, 기록 백업·복원.
 
 // ---- 공구 안내 (광고) ----
 const PROMO = {
@@ -27,8 +26,8 @@ function renderPromo(el) {
 // ---- 저장: 이 휴대폰에만, 브라우저에 오래 보관 요청 ----
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch {}
 
-// ---- 기록 백업·복원 (두 앱 기록을 한꺼번에) ----
-const BACKUP_KEYS = ['zzin-growth-v1', 'zzin-meal-v1'];
+// ---- 기록 백업·복원 ----
+const BACKUP_KEYS = ['zzin-meal-v1'];
 function makeBackup() {
   const data = {};
   BACKUP_KEYS.forEach((k) => { try { const v = localStorage.getItem(k); if (v) data[k] = JSON.parse(v); } catch {} });
